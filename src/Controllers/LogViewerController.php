@@ -6,12 +6,14 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Crypt, File, View};
 use LumenLogViewer\LumenLogViewer;
+use Laravel\Lumen\Routing\Controller as LumenRoutingController;
+use Illuminate\Routing\Controller as IlluminateRoutingController;
 
-if (class_exists('Laravel\Lumen\Routing\Controller')) {
-    class Controller extends \Laravel\Lumen\Routing\Controller {
+if (class_exists(LumenRoutingController::class)) {
+    class Controller extends LumenRoutingController {
     }
 } else {
-    class Controller extends \Illuminate\Routing\Controller {
+    class Controller extends IlluminateRoutingController {
     }
 }
 
@@ -129,8 +131,7 @@ class LogViewerController extends Controller {
      * @return string
      * @throws Exception
      */
-    private function pathFromInput($input_string): string
-    {
+    private function pathFromInput($input_string) {
         return $this->log_viewer->pathToLogFile(Crypt::decrypt($this->request->input($input_string)));
     }
 }

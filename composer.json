@@ -12,12 +12,13 @@
     ],
     "require": {
         "php": "^7.2",
-        "illuminate/support": "6.*"
+        "illuminate/support": "^6.0 || ^7.0",
+        "laravel/lumen": "^7.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "orchestra/testbench": "~3.8.0|^4.0",
-        "phpunit/phpunit" : "^8.0"
+        "orchestra/testbench": "~3.8.0|^4.0|^5.0",
+        "phpunit/phpunit" : "^8.0 || ^9.0"
     },
     "autoload": {
         "psr-4": {

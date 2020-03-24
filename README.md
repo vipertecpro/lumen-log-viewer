@@ -1,4 +1,4 @@
-# Lumen 6 Log Viewer
+# Lumen 7 Log Viewer
 
 ## What is this?
 
