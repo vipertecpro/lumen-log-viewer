@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="./vendor/autoload.php"
+         convertNoticesToExceptions="true" convertWarningsToExceptions="true"
+         stopOnError="false" stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false">
+    <testsuites>
+        <testsuite name="All">
+            <directory suffix="LumenLogViewerTest.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="build/coverage"/>
+    </logging>
+</phpunit>
