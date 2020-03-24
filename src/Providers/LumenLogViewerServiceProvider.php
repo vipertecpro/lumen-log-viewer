@@ -18,7 +18,8 @@ class LumenLogViewerServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
+    public function boot(): void
+    {
         $this->loadViewsFrom(__DIR__ . '/../../views', 'lumen-log-viewer');
     }
 
@@ -27,7 +28,7 @@ class LumenLogViewerServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register() {
+    public function register(): void {
         $this->mergeConfigFrom(__DIR__ . '/../../config/logviewer.php', 'logviewer');
     }
 }

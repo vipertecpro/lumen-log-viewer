@@ -43,7 +43,8 @@ class Level {
     /**
      * @return array
      */
-    public function all() {
+    public function all(): array
+    {
         return array_keys($this->levels_imgs);
     }
 
@@ -61,7 +62,8 @@ class Level {
      *
      * @return string
      */
-    public function cssClass($level) {
+    public function cssClass($level): string
+    {
         return $this->levels_classes[$level];
     }
 }

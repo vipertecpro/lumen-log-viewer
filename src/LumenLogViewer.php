@@ -5,6 +5,7 @@ namespace LumenLogViewer;
 use Exception;
 use Illuminate\Support\Facades\File;
 use LumenLogViewer\Utils\{Level, Pattern};
+use RuntimeException;
 
 /**
  * Class LumenLogViewer
@@ -56,7 +57,8 @@ class LumenLogViewer {
         $this->storage_path = config('logviewer.storage_path', storage_path('logs'));
     }
 
-    public static function getInstance() {
+    public static function getInstance(): LumenLogViewer
+    {
         if (!self::$logViewer) {
             self::$logViewer = new self();
         }
@@ -66,7 +68,8 @@ class LumenLogViewer {
     /**
      * @param string $folder
      */
-    public function setFolder($folder) {
+    public function setFolder($folder): void
+    {
         if (File::exists($folder)) {
             $this->folder = $folder;
         } elseif ($this->storage_path) {
@@ -82,7 +85,8 @@ class LumenLogViewer {
      *
      * @throws Exception
      */
-    public function setFile($file) {
+    public function setFile($file): void
+    {
         $file = $this->pathToLogFile($file);
 
         if (File::exists($file)) {
@@ -96,7 +100,8 @@ class LumenLogViewer {
      * @return string
      * @throws Exception
      */
-    public function pathToLogFile($file) {
+    public function pathToLogFile($file): string
+    {
         if (File::exists($file)) { // try the absolute path
             return $file;
         }
@@ -106,7 +111,7 @@ class LumenLogViewer {
         $file = $logsPath . '/' . $file;
         // check if requested file is really in the logs directory
         if (dirname($file) !== $logsPath) {
-            throw new Exception('No such log file');
+            throw new RuntimeException('No such log file');
         }
         return $file;
     }
@@ -114,21 +119,24 @@ class LumenLogViewer {
     /**
      * @return string
      */
-    public function getFolderName() {
+    public function getFolderName(): string
+    {
         return $this->folder;
     }
 
     /**
      * @return string
      */
-    public function getFileName() {
+    public function getFileName(): string
+    {
         return basename($this->file);
     }
 
     /**
      * @return array
      */
-    public function all() {
+    public function all(): array
+    {
         $log = [];
         if (!$this->file) {
             $log_file = (!$this->folder) ? $this->getFiles() : $this->getFolderFiles();
@@ -160,7 +168,7 @@ class LumenLogViewer {
         foreach ($headings as $h) {
             for ($i = 0, $j = count($h); $i < $j; $i++) {
                 foreach ($this->level->all() as $level) {
-                    if (strpos(strtolower($h[$i]), '.' . $level) || strpos(strtolower($h[$i]), $level . ':')) {
+                    if (stripos($h[$i], '.' . $level) || stripos($h[$i], $level . ':')) {
                         preg_match($this->pattern->getPattern('current_log', 0) . $level .
                             $this->pattern->getPattern('current_log', 1), $h[$i], $current);
                         if (!isset($current[4])) {
@@ -175,7 +183,7 @@ class LumenLogViewer {
                             'level_img' => $this->level->img($level),
                             'date' => $current[1],
                             'text' => $current[4],
-                            'in_file' => isset($current[5]) ? $current[5] : null,
+                            'in_file' => $current[5] ?? null,
                             'stack' => preg_replace("/^\n*/", '', $log_data[$i])
                         ];
                     }
@@ -208,7 +216,8 @@ class LumenLogViewer {
     /**
      * @return array
      */
-    public function getFolders() {
+    public function getFolders(): array
+    {
         $folders = glob($this->storage_path . '/*', GLOB_ONLYDIR);
 
         if (is_array($folders)) {
@@ -224,7 +233,8 @@ class LumenLogViewer {
      *
      * @return array
      */
-    public function getFolderFiles($basename = false) {
+    public function getFolderFiles($basename = false): array
+    {
         return $this->getFiles($basename, $this->folder);
     }
 
@@ -234,7 +244,8 @@ class LumenLogViewer {
      *
      * @return array
      */
-    public function getFiles($basename = false, $folder = '') {
+    public function getFiles($basename = false, $folder = ''): array
+    {
         $pattern = function_exists('config') ? config('logviewer.pattern', '*.log') : '*.log';
 
         $files = glob(

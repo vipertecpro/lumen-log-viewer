@@ -25,7 +25,8 @@ class Pattern {
      *
      * @return string pattern
      */
-    public function getPattern($pattern, $position = null) {
+    public function getPattern($pattern, $position = null): string
+    {
         if ($position !== null) {
             return $this->patterns[$pattern][$position];
         }

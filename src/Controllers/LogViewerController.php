@@ -129,7 +129,8 @@ class LogViewerController extends Controller {
      * @return string
      * @throws Exception
      */
-    private function pathFromInput($input_string) {
+    private function pathFromInput($input_string): string
+    {
         return $this->log_viewer->pathToLogFile(Crypt::decrypt($this->request->input($input_string)));
     }
 }

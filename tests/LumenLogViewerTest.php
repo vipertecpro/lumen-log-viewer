@@ -10,6 +10,7 @@ use LumenLogViewer\Controllers\LogViewerController;
 use LumenLogViewer\LumenLogViewer;
 use LumenLogViewer\Providers\LumenLogViewerServiceProvider;
 use Orchestra\Testbench\TestCase;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
@@ -21,7 +22,7 @@ class LumenLogViewerTest extends TestCase {
 
     private $logViewer;
 
-    protected function getEnvironmentSetUp($app) {
+    protected function getEnvironmentSetUp($app): void {
         $app->useEnvironmentPath(__DIR__ . '/../');
         $app->loadEnvironmentFrom('.env.testing');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
@@ -29,7 +30,6 @@ class LumenLogViewerTest extends TestCase {
         parent::getEnvironmentSetUp($app);
     }
 
-    /** @noinspection PhpLanguageLevelInspection */
     protected function setUp(): void {
         parent::setUp();
 
@@ -43,18 +43,20 @@ class LumenLogViewerTest extends TestCase {
     /**
      * @throws Exception
      */
-    function testSetFile() {
+    public function testSetFile(): void
+    {
         parent::setUp();
         try {
             $this->logViewer->setFile(storage_path('logs/lumen.log'));
             $this->logViewer->setFile('lumen.log');
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new RuntimeException($e->getMessage());
         }
         $this->assertEquals('lumen.log', $this->logViewer->getFileName());
     }
 
-    function testAll() {
+    public function testAll(): void
+    {
         $data = $this->logViewer->all();
         $this->assertEquals('local', $data[0]['context']);
         $this->assertEquals('error', $data[0]['level']);
@@ -63,7 +65,8 @@ class LumenLogViewerTest extends TestCase {
         $this->assertEquals('2018-09-05 20:20:51', $data[0]['date']);
     }
 
-    function testSetFileNotExist() {
+    public function testSetFileNotExist(): void
+    {
         try {
             $this->logViewer->setFile('not-exist/lumen.log');
         } catch (Exception $e) {
@@ -72,7 +75,8 @@ class LumenLogViewerTest extends TestCase {
         $this->assertFalse(false);
     }
 
-    function testAllWithFileNotExist() {
+    public function testAllWithFileNotExist(): void
+    {
         try {
             $this->logViewer->setFile('not-exist/lumen.log');
         } catch (Exception $e) {
@@ -85,7 +89,8 @@ class LumenLogViewerTest extends TestCase {
         $this->assertEquals('2018-09-05 20:20:51', $data[0]['date']);
     }
 
-    function testGetFolders() {
+    public function testGetFolders(): void
+    {
         $dir_a = storage_path('logs/a');
         $dir_b = storage_path('logs/b');
         $dir_c = storage_path('logs/c');
@@ -97,25 +102,29 @@ class LumenLogViewerTest extends TestCase {
         $this->assertNotEmpty($this->logViewer->getFolders());
     }
 
-    function testGetFolderFiles() {
+    public function testGetFolderFiles(): void
+    {
         $data = $this->logViewer->getFolderFiles(true);
         $this->assertNotEmpty($data[0], 'Folder files is null');
     }
 
-    function testSetFolderNotExist() {
+    public function testSetFolderNotExist(): void
+    {
         $this->logViewer->setFolder('abc');
         $this->assertDirectoryNotExists(storage_path('logs/abc'));
     }
 
-    function testSetFolder() {
+    public function testSetFolder(): void
+    {
         $this->logViewer->setFolder(storage_path('logs'));
-        $this->assertTrue($this->logViewer->getFolderName() === storage_path('logs'));
+        $this->assertSame($this->logViewer->getFolderName(), storage_path('logs'));
     }
 
     /**
      * @throws Exception
      */
-    function testController() {
+    public function testController(): void
+    {
         $encrypted = encrypt($this->logViewer->getFolderName());
 
         $reqParamF = Request::create('/logs', 'GET', ['f' => $encrypted], [], [],
